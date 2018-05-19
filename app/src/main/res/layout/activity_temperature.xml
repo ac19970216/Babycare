@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.user.babycare2.TemperatureActivity"
+    android:orientation="vertical">
+
+
+        <com.shinelw.library.ColorArcProgressBar
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/bar1"
+            app:is_need_content="true"
+            app:front_color1="#CCDDFF"
+            app:front_color2="#5599FF"
+            app:front_color3="#0000FF"
+            app:max_value="50"
+            app:back_width="2dp"
+            app:front_width="10dp"
+            app:total_engle="270"
+            app:is_need_unit="true"
+            app:string_unit="°C"
+            app:is_need_title="true"
+            app:string_title="目前體溫"
+            app:back_color="@android:color/darker_gray"
+            android:layout_marginBottom="150dp"
+            />
+
+</LinearLayout>

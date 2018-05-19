@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_heart"
+
+        android:title="心律"
+        android:icon="@drawable/heartwithelectrocardiogram"/>
+
+    <item android:id="@+id/nav_temperature"
+
+        android:title="溫度"
+        android:icon="@drawable/temperature"/>
+
+</menu>
