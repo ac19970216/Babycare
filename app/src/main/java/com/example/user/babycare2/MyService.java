@@ -33,6 +33,7 @@ import java.util.TimerTask;
 
 public class MyService extends Service {
     int repeat=0;
+    int countHeartrate =0;
     
     public void onCreate(){
         Timer timer = new Timer();
@@ -46,7 +47,7 @@ public class MyService extends Service {
                 message.what=0;
                 mHandler.sendMessage(message);
             }
-        }, 500, 1000);
+        }, 500, 5000);
 
 
     }
@@ -92,8 +93,9 @@ public class MyService extends Service {
                             HRrate[i] = Integer.parseInt(data.hr[i].HR);
                         }
 
-                        if(HRrate[(data.hr.length)-1]>130 && HRrate[(data.hr.length)-1] != repeat){
+                        if(HRrate[(data.hr.length)-1]>160 && HRrate[(data.hr.length)-1] != repeat && countHeartrate==0){
                             repeat=HRrate[(data.hr.length)-1];
+                            countHeartrate = 10;
                             //System.out.println(HRrate[(data.hr.length)-1]);
 
                             Intent intent = new Intent(MyService.this, HeartRateActivity.class);
@@ -115,6 +117,12 @@ public class MyService extends Service {
 
                             notificationManager.notify(1, mBuilder.build());
 
+                        }
+                        else{
+                            countHeartrate--;
+                            if(countHeartrate <=0){
+                                countHeartrate=0;
+                            }
                         }
 
                     }
