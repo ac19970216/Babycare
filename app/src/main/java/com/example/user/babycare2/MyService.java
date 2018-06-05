@@ -33,7 +33,15 @@ import java.util.TimerTask;
 
 public class MyService extends Service {
     int repeat=0;
-    int countHeartrate =0;
+    int countmun =1;
+
+    class Data{
+        babywarning[] babywarning;
+        class babywarning{
+            String Time;
+            String warning;
+        }
+    }
     
     public void onCreate(){
         Timer timer = new Timer();
@@ -47,7 +55,7 @@ public class MyService extends Service {
                 message.what=0;
                 mHandler.sendMessage(message);
             }
-        }, 500, 5000);
+        }, 500, 1500);
 
 
     }
@@ -66,7 +74,7 @@ public class MyService extends Service {
             if (msg.what == 0) {
                 OkHttpClient mOkHttpClient = new OkHttpClient();
 
-                Request requset = new Request.Builder().url("http://192.168.100.7/get_Heartrate.php/").build();
+                Request requset = new Request.Builder().url("http://192.168.100.7/get_warning.php/").build();
 
                 Call call = mOkHttpClient.newCall(requset);
 
@@ -79,25 +87,27 @@ public class MyService extends Service {
                     @Override
                     public void onResponse(Response response) throws IOException {
                         Gson gson = new Gson();
-                        HeartRateActivity.Data data = gson.fromJson(response.body().string(), HeartRateActivity.Data.class);
+                        Data data = gson.fromJson(response.body().string(), Data.class);
 
-                        String[] list_item = new String[data.hr.length];
-                        for (int i = 0; i < data.hr.length; i++) {
+                        String[] list_item = new String[data.babywarning.length];
+                        for (int i = 0; i < data.babywarning.length; i++) {
                             list_item[i] = new String();
-                            list_item[i] += "\n時間:" + data.hr[i].Time;
-                            list_item[i] += "\n心跳:" + data.hr[i].HR;
+                            list_item[i] += "\n時間:" + data.babywarning[i].Time;
+                            list_item[i] += "\n警告:" + data.babywarning[i].warning;
+                        }
+                        int[] Warning = new int[data.babywarning.length];
+                        for(int i =0 ; i<data.babywarning.length;i++)
+                        {
+                            Warning[i]=Integer.parseInt(data.babywarning[i].warning);
+                            //System.out.println(HRrate[i]);
+                        }
+                        if( countmun ==1){
+                            repeat = Warning[(data.babywarning.length)-1];
+                            countmun++;
                         }
 
-                        int[] HRrate = new int[data.hr.length];
-                        for (int i = 0; i < data.hr.length; i++) {
-                            HRrate[i] = Integer.parseInt(data.hr[i].HR);
-                        }
-
-                        if(HRrate[(data.hr.length)-1]>160 && HRrate[(data.hr.length)-1] != repeat && countHeartrate==0){
-                            repeat=HRrate[(data.hr.length)-1];
-                            countHeartrate = 10;
-                            //System.out.println(HRrate[(data.hr.length)-1]);
-
+                        if(Warning[(data.babywarning.length)-1] == 1 && Warning[(data.babywarning.length)-1] != repeat){
+                            repeat = Warning[(data.babywarning.length)-1];
                             Intent intent = new Intent(MyService.this, HeartRateActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             PendingIntent pendingIntent = PendingIntent.getActivity(MyService.this,0, intent, 0);
@@ -105,26 +115,97 @@ public class MyService extends Service {
                             Notification.Builder mBuilder = new Notification.Builder(MyService.this,"HeartRateNotification")
                                     .setSmallIcon(R.drawable.ic_report_problem_black_24dp)
                                     .setContentTitle("警告")
-                                    .setContentText("寶寶心率可能有異常!")
+                                    .setContentText("偵測到時間"+data.babywarning[(data.babywarning.length)-1].Time+"寶寶的心率過低!")
                                     //.setPriority(Notification.PRIORITY_DEFAULT)
                                     // Set the intent that will fire when the user taps the notification
                                     .setContentIntent(pendingIntent)
                                     .setAutoCancel(true);
                             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyService.this);
-
 // notificationId is a unique int for each notification that you must define
                             createNotificationChannel();   //創建Notification Channel
+                            notificationManager.notify(1, mBuilder.build());
+                        }
+                        else if(Warning[(data.babywarning.length)-1] == 2 && Warning[(data.babywarning.length)-1] != repeat){
+                            repeat = Warning[(data.babywarning.length)-1];
+                            Intent intent = new Intent(MyService.this, HeartRateActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(MyService.this,0, intent, 0);
 
+                            Notification.Builder mBuilder = new Notification.Builder(MyService.this,"HeartRateNotification")
+                                    .setSmallIcon(R.drawable.ic_report_problem_black_24dp)
+                                    .setContentTitle("警告")
+                                    .setContentText("偵測到時間"+data.babywarning[(data.babywarning.length)-1].Time+"寶寶的心率過高!")
+                                    //.setPriority(Notification.PRIORITY_DEFAULT)
+                                    // Set the intent that will fire when the user taps the notification
+                                    .setContentIntent(pendingIntent)
+                                    .setAutoCancel(true);
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyService.this);
+// notificationId is a unique int for each notification that you must define
+                            createNotificationChannel();   //創建Notification Channel
+                            notificationManager.notify(1, mBuilder.build());
+                        }
+                        else if(Warning[(data.babywarning.length)-1] == 3 && Warning[(data.babywarning.length)-1] != repeat){
+                            repeat = Warning[(data.babywarning.length)-1];
+                            Intent intent = new Intent(MyService.this, TemperatureActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(MyService.this,0, intent, 0);
+
+                            Notification.Builder mBuilder = new Notification.Builder(MyService.this,"HeartRateNotification")
+                                    .setSmallIcon(R.drawable.ic_report_problem_black_24dp)
+                                    .setContentTitle("警告")
+                                    .setContentText("偵測到時間"+data.babywarning[(data.babywarning.length)-1].Time+"寶寶的體溫過低!")
+                                    //.setPriority(Notification.PRIORITY_DEFAULT)
+                                    // Set the intent that will fire when the user taps the notification
+                                    .setContentIntent(pendingIntent)
+                                    .setAutoCancel(true);
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyService.this);
+// notificationId is a unique int for each notification that you must define
+                            createNotificationChannel();   //創建Notification Channel
+                            notificationManager.notify(1, mBuilder.build());
+                        }
+                        else if(Warning[(data.babywarning.length)-1] == 4 && Warning[(data.babywarning.length)-1] != repeat){
+                            repeat = Warning[(data.babywarning.length)-1];
+                            Intent intent = new Intent(MyService.this, TemperatureActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(MyService.this,0, intent, 0);
+
+                            Notification.Builder mBuilder = new Notification.Builder(MyService.this,"HeartRateNotification")
+                                    .setSmallIcon(R.drawable.ic_report_problem_black_24dp)
+                                    .setContentTitle("警告")
+                                    .setContentText("偵測到時間"+data.babywarning[(data.babywarning.length)-1].Time+"寶寶可能發燒!")
+                                    //.setPriority(Notification.PRIORITY_DEFAULT)
+                                    // Set the intent that will fire when the user taps the notification
+                                    .setContentIntent(pendingIntent)
+                                    .setAutoCancel(true);
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyService.this);
+// notificationId is a unique int for each notification that you must define
+                            createNotificationChannel();   //創建Notification Channel
+                            notificationManager.notify(1, mBuilder.build());
+                        }
+                        else if(Warning[(data.babywarning.length)-1] == 5 && Warning[(data.babywarning.length)-1] != repeat){
+                            repeat = Warning[(data.babywarning.length)-1];
+                            Intent intent = new Intent(MyService.this, HeartRateActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(MyService.this,0, intent, 0);
+
+                            Notification.Builder mBuilder = new Notification.Builder(MyService.this,"HeartRateNotification")
+                                    .setSmallIcon(R.drawable.ic_report_problem_black_24dp)
+                                    .setContentTitle("警告")
+                                    .setContentText("偵測到時間"+data.babywarning[(data.babywarning.length)-1].Time+"寶寶可能在哭鬧中，已啟用安撫功能但仍然無效，請檢察寶寶狀況!")
+                                    //.setPriority(Notification.PRIORITY_DEFAULT)
+                                    // Set the intent that will fire when the user taps the notification
+                                    .setContentIntent(pendingIntent)
+                                    .setAutoCancel(true);
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyService.this);
+// notificationId is a unique int for each notification that you must define
+                            createNotificationChannel();   //創建Notification Channel
                             notificationManager.notify(1, mBuilder.build());
 
                         }
-                        else{
-                            countHeartrate--;
-                            if(countHeartrate <=0){
-                                countHeartrate=0;
-                            }
+                        else if(Warning[(data.babywarning.length)-1] == 0)
+                        {
+                            repeat = Warning[(data.babywarning.length)-1];
                         }
-
                     }
                 });
             }
@@ -138,7 +219,7 @@ public class MyService extends Service {
             //CharSequence name = getString(R.string.channel_name);
             //String description = getString(R.string.channel_description);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("HeartRateNotification", "心率警告", importance);
+            NotificationChannel channel = new NotificationChannel("HeartRateNotification", "警告", importance);
             //channel.setDescription("and you?");
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this

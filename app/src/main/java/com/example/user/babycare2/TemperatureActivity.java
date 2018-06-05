@@ -51,6 +51,8 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
 
     int i =0 ;
     int j =0;
+    float floatnum = 0.0f;
+    float floatTemp = 0.0f;
 
     class Data{
         Temperature[] temperature;
@@ -129,15 +131,30 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                             list_item[i]+="\n臉溫度:"+data.temperature[i].TempFace;
                         }
                         String[] strArr1=data.temperature[data.temperature.length-1].Temp.split("[.]");
-                        i = Integer.parseInt(strArr1[0]);
-                        j = Integer.parseInt(strArr1[1]);
+                        floatTemp =Float.parseFloat(data.temperature[data.temperature.length-1].Temp);
+                        floatnum = (floatTemp % 1);
+                        if(floatnum !=0.0f)
+                        {
+                            i = Integer.parseInt(strArr1[0]);
+                            j = Integer.parseInt(strArr1[1]);
+                        }
+
 
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                progressbar = (ColorArcProgressBar) findViewById(R.id.bar1);
-                                progressbar.setCurrentValues(i);
-                                progressbar.setUnit("."+j+"°C");
+                                if(floatnum ==0.0f)
+                                {
+                                    progressbar = (ColorArcProgressBar) findViewById(R.id.bar1);
+                                    progressbar.setCurrentValues(floatTemp);
+                                    progressbar.setUnit("°C");
+                                }
+                                else{
+                                    progressbar = (ColorArcProgressBar) findViewById(R.id.bar1);
+                                    progressbar.setCurrentValues(i);
+                                    progressbar.setUnit("."+j+"°C");
+                                }
+
 
                             }
                         });
@@ -167,7 +184,7 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                             entries.add(new Entry(i+1, Temprate[(data.temperature.length)-10+i]));
                         }
                         //一个LineDataSet就是一条线
-                        LineDataSet lineDataSet = new LineDataSet(entries, "溫度");
+                        LineDataSet lineDataSet = new LineDataSet(entries, "體溫");
                         LineData linedata = new LineData(lineDataSet);
                         lineDataSet.setValueFormatter(new IValueFormatter() {
                             @Override
@@ -182,6 +199,7 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                         lineDataSet.setValueTextSize(11f);
                         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
                         lineDataSet.setDrawCircleHole(false);
+                        lineDataSet.setDrawFilled(true);
                         mLineChart.setData(linedata);
                         //LimitLine limitLine = new LimitLine(38,"發燒"); //得到限制线
                         //limitLine.setLineWidth(2f); //宽度
@@ -189,7 +207,7 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                         //limitLine.setTextColor(Color.BLUE);  //颜色
                        // limitLine.setLineColor(Color.RED);
                         rightYAxis.setEnabled(false);
-                        leftYAxis.setAxisMinimum(36f);
+                        leftYAxis.setAxisMinimum(10f);
                         leftYAxis.setAxisMaximum(42f);
                         xAxis.setGranularity(1f);
                         //leftYAxis.addLimitLine(limitLine); //Y轴添加限制线
@@ -221,7 +239,7 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                             entries2.add(new Entry(i+1, TemprateEnvir[(data.temperature.length)-10+i]));
                         }
                         //一个LineDataSet就是一条线
-                        LineDataSet lineDataSet2 = new LineDataSet(entries2, "環境溫度");
+                        LineDataSet lineDataSet2 = new LineDataSet(entries2, "室溫");
                         LineData linedata2 = new LineData(lineDataSet2);
                         lineDataSet2.setValueFormatter(new IValueFormatter() {
                             @Override
@@ -236,6 +254,7 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                         lineDataSet2.setValueTextSize(11f);
                         lineDataSet2.setMode(LineDataSet.Mode.CUBIC_BEZIER);
                         lineDataSet2.setDrawCircleHole(false);
+                        lineDataSet2.setDrawFilled(true);
                         mLineChart2.setData(linedata2);
                         //LimitLine limitLine2 = new LimitLine(38,"發燒"); //得到限制线
                        // limitLine2.setLineWidth(2f); //宽度
@@ -243,7 +262,7 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                        // limitLine2.setTextColor(Color.BLUE);  //颜色
                        // limitLine2.setLineColor(Color.RED);
                         rightYAxis2.setEnabled(false);
-                        leftYAxis2.setAxisMinimum(36f);
+                        leftYAxis2.setAxisMinimum(10f);
                         leftYAxis2.setAxisMaximum(42f);
                         xAxis2.setGranularity(1f);
                         //leftYAxis2.addLimitLine(limitLine2); //Y轴添加限制线
@@ -251,7 +270,7 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                         ////////////////////////////////////////////////////////////////////
 
 
-                        //////////////////////////////////////////////////////////////////////圖表
+                        /*//////////////////////////////////////////////////////////////////////圖表
 
                         LineChart mLineChart3 = (LineChart) findViewById(R.id.lineChart3);
                         //显示边界
@@ -291,6 +310,7 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                         lineDataSet3.setValueTextSize(11f);
                         lineDataSet3.setMode(LineDataSet.Mode.CUBIC_BEZIER);
                         lineDataSet3.setDrawCircleHole(false);
+                        lineDataSet3.setDrawFilled(true);
                         mLineChart3.setData(linedata3);
                        // LimitLine limitLine3 = new LimitLine(38,"發燒"); //得到限制线
                        // limitLine3.setLineWidth(2f); //宽度
@@ -298,16 +318,16 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                       //  limitLine3.setTextColor(Color.BLUE);  //颜色
                       //  limitLine3.setLineColor(Color.RED);
                         rightYAxis3.setEnabled(false);
-                        leftYAxis3.setAxisMinimum(36f);
+                        leftYAxis3.setAxisMinimum(10f);
                         leftYAxis3.setAxisMaximum(42f);
                         xAxis3.setGranularity(1f);
                       //  leftYAxis3.addLimitLine(limitLine3); //Y轴添加限制线
                         mLineChart3.invalidate();
-                        ////////////////////////////////////////////////////////////////////
+                        ////////////////////////////////////////////////////////////////////*/
 
 
                         float temp = Float.parseFloat(data.temperature[data.temperature.length-1].Temp);
-                        if(temp<= 38){
+                        if(temp< 37.2 && temp>35){
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -317,13 +337,23 @@ public class TemperatureActivity extends AppCompatActivity implements Navigation
                                 }
                             });
                         }
-                        else if(temp> 38){
+                        else if(temp>= 37.2){
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Temperature.setText("體溫過高");
                                     Temperature.setTextColor(Color.parseColor("#FFFFFF"));
                                     Temperature.setBackground(getResources().getDrawable(R.drawable.shape_label_red));
+                                }
+                            });
+                        }
+                        else if(temp<=35){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Temperature.setText("體溫偏低");
+                                    Temperature.setTextColor(Color.parseColor("#FFFFFF"));
+                                    Temperature.setBackground(getResources().getDrawable(R.drawable.shape_label_orange));
                                 }
                             });
                         }

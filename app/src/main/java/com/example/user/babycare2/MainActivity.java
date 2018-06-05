@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);//清單觸發監聽事件
 
 
-        Intent it = new Intent(MainActivity.this, MyService.class);
-        stopService(it); //結束Service
+        Intent intent = new Intent(MainActivity.this, MyService.class);
+        MainActivity.this.startService(intent);
 
 
     }
@@ -124,8 +124,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 @Override
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
-                                    Intent intent = new Intent(MainActivity.this, MyService.class);
-                                    MainActivity.this.startService(intent);
                                     finish();
                                 }
                             })

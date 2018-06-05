@@ -171,7 +171,7 @@ public class HeartRateActivity extends AppCompatActivity implements NavigationVi
                             entries.add(new Entry(i+1, HRrate[(data.hr.length)-10+i]));
                         }
                         //一个LineDataSet就是一条线
-                        LineDataSet lineDataSet = new LineDataSet(entries, "心律");
+                        LineDataSet lineDataSet = new LineDataSet(entries, "心率");
                         LineData linedata = new LineData(lineDataSet);
                         lineDataSet.setValueFormatter(new IValueFormatter() {
                             @Override
@@ -186,17 +186,14 @@ public class HeartRateActivity extends AppCompatActivity implements NavigationVi
                         lineDataSet.setValueTextSize(11f);
                         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
                         lineDataSet.setDrawCircleHole(false);
+                        lineDataSet.setDrawFilled(true);
                         mLineChart.setData(linedata);
-                        LimitLine limitLine = new LimitLine(135,"高心律警示線"); //得到限制线
-                        limitLine.setLineWidth(4f); //宽度
-                        limitLine.setTextSize(12f);
-                        limitLine.setTextColor(Color.BLUE);  //颜色
-                        limitLine.setLineColor(Color.RED);
+
                         rightYAxis.setEnabled(false);
-                        leftYAxis.setAxisMinimum(40f);
-                        leftYAxis.setAxisMaximum(160f);
+                        leftYAxis.setAxisMinimum(80f);
+                        leftYAxis.setAxisMaximum(180f);
                         xAxis.setGranularity(1f);
-                        leftYAxis.addLimitLine(limitLine); //Y轴添加限制线
+
                         mLineChart.invalidate();
                         ////////////////////////////////////////////////////////////////////
                         progressbarHeartrate =HRrate[(data.hr.length)-1];
@@ -209,7 +206,7 @@ public class HeartRateActivity extends AppCompatActivity implements NavigationVi
                             }
                         });
 
-                        if(progressbarHeartrate>= 160){
+                        if(progressbarHeartrate>= 150){
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -219,7 +216,7 @@ public class HeartRateActivity extends AppCompatActivity implements NavigationVi
                                 }
                             });
                         }
-                        else if(progressbarHeartrate<160 && progressbarHeartrate>130){
+                        else if(progressbarHeartrate<150 && progressbarHeartrate>110){
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -229,7 +226,7 @@ public class HeartRateActivity extends AppCompatActivity implements NavigationVi
                                 }
                             });
                         }
-                        else if(progressbarHeartrate<130){
+                        else if(progressbarHeartrate<110){
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
